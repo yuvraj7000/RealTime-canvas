@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Room {
+  id        String   @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  shapes    Shape[]
+}
+
+model Shape {
+  id          String   @id
+  roomId      String
+  type        String
+  userId      String
+  x           Float
+  y           Float
+  width       Float
+  height      Float
+  points      Float[]
+  stroke      String
+  strokeWidth Int
+  imageUrl    String?
+  imagePublicId String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  room Room @relation(fields: [roomId], references: [id])
+
+  @@index([roomId])
+}
+
+model OperationHistory {
+  id        String   @id
+  roomId    String
+  userId    String
+  type      String
+  shapeId   String
+  before    Json?
+  after     Json?
+  createdAt DateTime @default(now())
+
+  @@index([roomId, userId])
+}
