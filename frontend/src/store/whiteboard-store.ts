@@ -59,7 +59,8 @@ const applyDelete = (state: WhiteboardState, shapeId: string) => {
     return { shapes: state.shapes, order: state.order };
   }
 
-  const { [shapeId]: _, ...rest } = state.shapes;
+  const rest = { ...state.shapes };
+  delete rest[shapeId];
   const order = state.order.filter((id) => id !== shapeId);
 
   return { shapes: rest, order };
@@ -180,7 +181,7 @@ export const useWhiteboardStore = create<WhiteboardState>((set) => ({
             ...state.undoStack,
             {
               id: createId("op"),
-              type: "create",
+              type: "create" as const,
               shapeId: shape.id,
               after: copyShape(nextShape),
             },
@@ -212,7 +213,7 @@ export const useWhiteboardStore = create<WhiteboardState>((set) => ({
           ...state.undoStack,
           {
             id: createId("op"),
-            type: "create",
+            type: "create" as const,
             shapeId,
             after: copyShape(shape),
           },
@@ -244,7 +245,7 @@ export const useWhiteboardStore = create<WhiteboardState>((set) => ({
             ...state.undoStack,
             {
               id: createId("op"),
-              type: "update",
+              type: "update" as const,
               shapeId,
               before: copyShape(current),
               after: copyShape(nextShape),
@@ -277,7 +278,7 @@ export const useWhiteboardStore = create<WhiteboardState>((set) => ({
             ...state.undoStack,
             {
               id: createId("op"),
-              type: "delete",
+              type: "delete" as const,
               shapeId,
               before: copyShape(current),
             },
